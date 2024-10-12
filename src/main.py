@@ -222,7 +222,7 @@ def playerStart() -> None:
             if player_states[0]['ready'] and player_states[1]['ready']:
                 if start_button.handle_event(event):
                     import player_test
-                    player_test.main()
+                    player_test.main([(player1_colour,player1_name),(player2_colour,player2_name)])
                     running = False  # Exit the setup and start the game
 
         pygame.display.flip()

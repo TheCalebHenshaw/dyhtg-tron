@@ -2,7 +2,6 @@ import pygame
 import sys
 import os
 import subprocess  # Import subprocess to run help.py
-import player_test
 
 
 # Initialize Pygame
@@ -152,7 +151,6 @@ def main_menu():
                 if play_button_rect.collidepoint(mouse_pos):
                     import main
                     main.playerStart()
-                    print("Start Game!")
                     
                 elif help_button_rect.collidepoint(mouse_pos):
                     help_script_path = os.path.join(script_dir, "help.py")

@@ -77,14 +77,17 @@ class Player(pygame.sprite.Sprite):
     def checkForCollision(self,arenaWidth,arenaHeight,otherTrailList):
         #checks if they have collided into the wall
         if self.rect.x >= arenaWidth-self.x_collision or self.rect.x < self.x_collision or self.rect.y >= arenaHeight-self.y_collision or self.rect.y < self.y_collision:
+            print(f"Has died",self.name)
             self.alive = False
 
         # Check if the player has collided with their own trail
         if self.rect.center in self.trail[:-1]:
+            print(f"Has died",self.name)
             self.alive = False
 
         # Check if the player has collided with the other player's trail
         if self.rect.center in otherTrailList[:-1]:
+            print(f"Has died",self.name)
             self.alive = False
 
     def reset(self, x, y):

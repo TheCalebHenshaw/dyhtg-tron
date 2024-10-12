@@ -2,7 +2,7 @@ import pygame
 from player import Player  # Assuming player.py is the file where your Player class is
 import os
 
-def main():
+def main(player_data):
     # Initialize Pygame
     pygame.init()
 
@@ -37,10 +37,10 @@ def main():
         'left': pygame.K_LEFT,
         'right': pygame.K_RIGHT
     }
-
+    [(player1_color, player1_name), (player2_color, player2_name)] = player_data
     # Create a Player instance
-    player1 = Player(250, 50, (0, 255, 0), player1_controls, 'Player1', 'media/Sprites/spaceships/PNG/Spaceships/ship/')
-    player2 = Player(650, 50, (255, 127, 80), player2_controls, 'Player2', 'media/Sprites/spaceships/PNG/Spaceships/ship/')
+    player1 = Player(250, 50, player1_color, player1_controls, player1_name, 'media/Sprites/spaceships/PNG/Spaceships/ship/')
+    player2 = Player(650, 50, player2_color, player2_controls, player2_name, 'media/Sprites/spaceships/PNG/Spaceships/ship/')
 
     # Define some colors
     WHITE = (255, 255, 255)
@@ -110,3 +110,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
