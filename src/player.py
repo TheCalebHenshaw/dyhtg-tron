@@ -1,5 +1,5 @@
 import pygame
-from color.py import Color
+from color import Color
 
 
 class Player:
@@ -26,6 +26,7 @@ class Player:
             self.direction = "LEFT"
         if keys[self.controls['right']] and self.direction !='LEFT':
             self.direction = "RIGHT"
+
     def move(self):
         if self.direction=="RIGHT":
             self.x+=self.speed
