@@ -94,9 +94,11 @@ def main(player_data):
         # If the player dies (collision), print a message
         if not player1.alive:
             print(f"{player1.name} collided!")
+            pygame.init()
             running = False
         if not player2.alive:
             print(f"{player2.name} collided!")
+            pygame.init()
             running = False
 
         # Update the screen
@@ -105,8 +107,6 @@ def main(player_data):
         # Cap the frame rate
         clock.tick(60)  # Adjust frame rate as needed
 
-    # Quit Pygame
-    pygame.quit()
 
 if __name__ == "__main__":
     main()

@@ -163,6 +163,7 @@ def handle_color_selection(event, player_index, x_offset):
 
 def playerStart() -> None:
     """Main setup loop to handle input and ready state."""
+    
     running = True
 
     # Create text boxes for player names
@@ -171,6 +172,7 @@ def playerStart() -> None:
 
     # Create start button (will only be shown when both players are ready)
     start_button = Button(350, 500, 120, 50, "Start")
+
 
     while running:
         screen.fill((0, 0, 0))  # Black background
