@@ -1,13 +1,15 @@
 import pygame
 from player import Player  # Assuming player.py is the file where your Player class is
-
+import os
 # Initialize Pygame
 pygame.init()
 #Initialize sound system
 pygame.mixer.init()
 
+audio_file = os.path.join("media", "Audio", "DaftPunkEndOfLine.mp3")
+
 #Load the background music 
-pygame.mixer.music.load("media\Audio\DaftPunkEndOfLine.mp3")
+pygame.mixer.music.load(audio_file)
 pygame.mixer.music.play(-1)
 
 # Set up the screen
