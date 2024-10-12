@@ -1,0 +1,23 @@
+# Python bytecode and cache files
+__pycache__/
+*.py[cod]
+
+# Pygame cache
+*.log
+*.pyo
+*.pyd
+*.so
+
+# MacOS specific files
+.DS_Store
+
+# Windows specific files
+Thumbs.db
+
+# Virtual environment
+venv/
+.env/
+
+# PyCharm or VSCode specific settings (optional, if using these IDEs)
+.idea/
+.vscode/
