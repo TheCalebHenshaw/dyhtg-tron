@@ -15,6 +15,8 @@ class Player:
         self.direction = "RIGHT"
         self.size = 5
         self.speed = 5
+        self.x_collision = 155
+        self.y_collision = 5
 
         
 
@@ -52,7 +54,7 @@ class Player:
 
     def checkForCollision(self,arenaWidth,arenaHeight,otherTrailList):
         #checks if they have collided into the wall
-        if self.x >= arenaWidth or self.x < 0 or self.y >= arenaHeight or self.y < 0:
+        if self.x >= arenaWidth-self.x_collision or self.x < self.x_collision or self.y >= arenaHeight-self.y_collision or self.y < self.y_collision:
             self.alive = False
         # check if player self collides
 
