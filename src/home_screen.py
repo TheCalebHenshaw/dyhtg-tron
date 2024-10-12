@@ -2,6 +2,8 @@ import pygame
 import sys
 import os
 import subprocess  # Import subprocess to run help.py
+import player_test
+
 
 # Initialize Pygame
 pygame.init()
@@ -80,20 +82,8 @@ def render_glow_text_with_fade(text, font, base_color, glow_color, max_glow_size
     return glow_surface
 
 # Game loop (placeholder)
-def game_loop():
-    running = True
-    while running:
-        screen.fill((0, 100, 255))  # Game background color
 
-        # Check for quit events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        pygame.display.update()
-
-    pygame.quit()
-    sys.exit()
+    
 
 # Main menu function
 def main_menu():
@@ -160,8 +150,10 @@ def main_menu():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button_rect.collidepoint(mouse_pos):
+                    import main
+                    main.playerStart()
                     print("Start Game!")
-                    game_loop()
+                    
                 elif help_button_rect.collidepoint(mouse_pos):
                     help_script_path = os.path.join(script_dir, "help.py")
                     if os.path.exists(help_script_path):

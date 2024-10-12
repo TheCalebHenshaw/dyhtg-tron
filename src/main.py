@@ -221,7 +221,8 @@ def playerStart() -> None:
             # Handle the start button click
             if player_states[0]['ready'] and player_states[1]['ready']:
                 if start_button.handle_event(event):
-                    print("Game Starting!")
+                    import player_test
+                    player_test.main()
                     running = False  # Exit the setup and start the game
 
         pygame.display.flip()
