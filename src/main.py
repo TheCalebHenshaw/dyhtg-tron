@@ -65,13 +65,14 @@ player_states = [{'name_input': True, 'color_input': False, 'ready': False},
 
 # TextBox class to handle player name input
 class TextBox:
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, player_index):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = (30, 30, 30)  # Dark background for the text box
         self.border_color = (255, 255, 255)  # White border
         self.text = ''
         self.active = False
         self.font = font
+        self.player_index = player_index  # Store player index
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -86,6 +87,12 @@ class TextBox:
                 self.text = self.text[:-1]
             elif event.key == pygame.K_RETURN:
                 self.active = False  # Deactivate the textbox when done
+                if self.player_index == 0:
+                    global player1_name
+                    player1_name = self.text  # Store Player 1 name
+                else:
+                    global player2_name
+                    player2_name = self.text  # Store Player 2 name
                 return True  # Indicate to move to the next input
             else:
                 self.text += event.unicode
@@ -98,6 +105,7 @@ class TextBox:
         pygame.draw.rect(screen, self.border_color, self.rect, 2)  # Border
         text_surface = self.font.render(self.text, True, (255, 255, 255))  # White text
         screen.blit(text_surface, (self.rect.x + 5, self.rect.y + 5))
+
 
 class Button:
     def __init__(self, x, y, width, height, text):
@@ -158,8 +166,8 @@ def playerStart() -> None:
     running = True
 
     # Create text boxes for player names
-    player1_textbox = TextBox(150, 100, 200, 40)  # Position below the player prompt
-    player2_textbox = TextBox(450, 100, 200, 40)  # Position below the player prompt
+    player1_textbox = TextBox(150, 100, 200, 40, 0)  # Position below the player prompt
+    player2_textbox = TextBox(450, 100, 200, 40, 1)  # Position below the player prompt
 
     # Create start button (will only be shown when both players are ready)
     start_button = Button(350, 500, 120, 50, "Start")
