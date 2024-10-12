@@ -61,8 +61,9 @@ def main(player_data):
         audio_file = os.path.join("media", "Audio", "DaftPunkEndOfLine.mp3")
 
         # Load the background music 
-        pygame.mixer.music.load(audio_file)
-        pygame.mixer.music.play(-1)
+        backgroundMusic = pygame.mixer.Sound(audio_file)
+        backgroundMusic.play(-1)
+        backgroundMusic.set_volume(0.5)
 
         # Set up the screen
         screen_width = 1200
@@ -104,6 +105,10 @@ def main(player_data):
 
         # Main game loop for testing
         running = True
+        
+        bikeAudio = os.path.join("media", "Audio", "TronCycleNoise.wav")
+        bikeSound = pygame.mixer.Sound(bikeAudio)
+        bikeSound.play()
         while running:
             screen.fill(BLACK)  # Clear screen with black
             blockSize = 30  # Set the size of the grid block
@@ -140,12 +145,20 @@ def main(player_data):
             # Draw the player and its trail
             player1.draw(screen)
             player2.draw(screen)
+            explosionAudio = os.path.join("media", "Audio", "Explosion.wav")
+            explosionSound = pygame.mixer.Sound(explosionAudio)
 
             # If the player dies (collision), display end screen
             if not player1.alive:
+                backgroundMusic.stop()
+                bikeSound.stop()
+                explosionSound.play()
                 display_end_screen(screen, player2.name)
                 running = False
             if not player2.alive:
+                backgroundMusic.stop()
+                bikeSound.stop()
+                explosionSound.play()
                 display_end_screen(screen, player1.name)
                 running = False
 
