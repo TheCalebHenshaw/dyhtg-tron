@@ -3,11 +3,11 @@ from color import Color
 
 
 class Player:
-    def __init__(self,x,y,color,controls,name) -> None:
+    def __init__(self,x,y,colour,controls,name) -> None:
         self.x = x
         self.y = y
         self.name = name
-        self.color = Color.BLUE
+        self.colour = colour
         self.controls = controls
         self.trail = [(self.x,self.y)]
         self.alive = True
