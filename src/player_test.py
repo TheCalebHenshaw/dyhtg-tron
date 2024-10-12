@@ -3,35 +3,126 @@ from player import Player  # Assuming player.py is the file where your Player cl
 import os
 import home_screen  # Import home_screen to go back to it
 
+import pygame
+import os
+
+# Constants
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 900
+FRAME_WIDTH = 500  # Frame width in the sprite sheet
+FRAME_HEIGHT = 500  # Frame height in the sprite sheet
+FRAME_DELAY = 100  # Delay between sprite frames in milliseconds
+
+# Load the sprite sheet image
+script_dir = os.path.dirname(os.path.abspath(__file__))
+sprite_sheet_path = os.path.join(script_dir, 'endgamebackground.png')
+
+# Function to load sprite sheet and extract frames
+def load_sprite_sheet(filename, frame_width, frame_height):
+    sprite_sheet = pygame.image.load(filename).convert_alpha()
+    sheet_width, sheet_height = sprite_sheet.get_size()
+
+    frames = []
+    columns = sheet_width // frame_width
+    rows = sheet_height // frame_height
+
+    for row in range(rows):
+        for col in range(columns):
+            x = col * frame_width
+            y = row * frame_height
+            frame = sprite_sheet.subsurface(pygame.Rect(x, y, frame_width, frame_height))
+            frame = pygame.transform.scale(frame, (SCREEN_WIDTH, SCREEN_HEIGHT))  # Scale to fit the screen
+            frames.append(frame)
+
+    return frames
+
+# Load the frames from the sprite sheet
+sprite_frames = load_sprite_sheet(sprite_sheet_path, FRAME_WIDTH, FRAME_HEIGHT)
+sprite_frame_count = len(sprite_frames)
+
 def display_end_screen(screen, winner_name):
-    screen.fill((0, 0, 0))  # Black background
-    font = pygame.font.Font(None, 74)
-    text = font.render(f"Game Over! {winner_name} Wins", True, (255, 255, 255))
-    screen.blit(text, (100, 200))
+    screen_width, screen_height = screen.get_size()
 
-    # "Quit Game" button settings
+    # Game Over! heading settings
+    font = pygame.font.Font(None, 100)
+    game_over_text = font.render("Game Over!", True, (255, 0, 0))  # Red color for the heading
+    game_over_rect = game_over_text.get_rect(center=(screen_width // 2, 150))
+
+    # Winner's name settings
+    winner_font = pygame.font.Font(None, 74)
+    winner_text = winner_font.render(f"{winner_name} Wins", True, (255, 255, 255))
+    winner_rect = winner_text.get_rect(center=(screen_width // 2, 250))
+
+    # Button settings
     button_font = pygame.font.Font(None, 50)
-    quit_text = button_font.render("Quit Game", True, (255, 255, 255))
-    quit_button_rect = pygame.Rect(100, 400, 200, 50)
-    pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)
-    screen.blit(quit_text, (quit_button_rect.x + 25, quit_button_rect.y + 10))
 
-    # "Play Again" button settings
-    play_again_text = button_font.render("Play Again", True, (255, 255, 255))
-    play_again_button_rect = pygame.Rect(350, 400, 200, 50)
-    pygame.draw.rect(screen, (0, 255, 0), play_again_button_rect)
-    screen.blit(play_again_text, (play_again_button_rect.x + 25, play_again_button_rect.y + 10))
+    quit_text = button_font.render(" Quit Game", True, (255, 255, 255))
+    play_again_text = button_font.render(" Play Again", True, (255, 255, 255))
+    home_text = button_font.render("       Home", True, (255, 255, 255))
 
-    # "Go Back to Home" button settings
-    home_text = button_font.render("Go Back to Home", True, (255, 255, 255))
-    home_button_rect = pygame.Rect(600, 400, 250, 50)
-    pygame.draw.rect(screen, (0, 0, 255), home_button_rect)
-    screen.blit(home_text, (home_button_rect.x + 15, home_button_rect.y + 10))
+    # Centering buttons and spacing them equally
+    button_width, button_height = 250, 50
+    spacing = 80  # Vertical spacing between buttons
+
+    quit_button_rect = pygame.Rect((screen_width // 2 - button_width // 2, 400), (button_width, button_height))
+    play_again_button_rect = pygame.Rect((screen_width // 2 - button_width // 2, 400 + spacing), (button_width, button_height))
+    home_button_rect = pygame.Rect((screen_width // 2 - button_width // 2, 400 + 2 * spacing), (button_width, button_height))
+
+    # Fading effect variables
+    alpha = 255
+    fading_out = True  # Start with fading out
+
+    # Sprite animation variables
+    current_frame = 0
+    last_update_time = pygame.time.get_ticks()
 
     pygame.display.flip()
 
     waiting = True
+    clock = pygame.time.Clock()
+
     while waiting:
+        screen.fill((0, 0, 0))  # Black background
+
+        # Handle frame timing to update the current frame
+        now = pygame.time.get_ticks()
+        if now - last_update_time > FRAME_DELAY:
+            current_frame = (current_frame + 1) % sprite_frame_count
+            last_update_time = now
+
+        # Draw the current frame of the sprite sheet as the background
+        screen.blit(sprite_frames[current_frame], (0, 0))
+
+        # Handle fading effect for Game Over text
+        game_over_text.set_alpha(alpha)
+        screen.blit(game_over_text, game_over_rect)
+
+        # Fade in/out logic
+        if fading_out:
+            alpha -= 5
+            if alpha <= 50:
+                fading_out = False
+        else:
+            alpha += 5
+            if alpha >= 255:
+                fading_out = True
+
+        # Draw winner name
+        screen.blit(winner_text, winner_rect)
+
+        # Draw buttons
+        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)
+        screen.blit(quit_text, (quit_button_rect.x + 25, quit_button_rect.y + 10))
+
+        pygame.draw.rect(screen, (0, 255, 0), play_again_button_rect)
+        screen.blit(play_again_text, (play_again_button_rect.x + 25, play_again_button_rect.y + 10))
+
+        pygame.draw.rect(screen, (0, 0, 255), home_button_rect)
+        screen.blit(home_text, (home_button_rect.x + 15, home_button_rect.y + 10))
+
+        pygame.display.flip()
+
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -48,6 +139,9 @@ def display_end_screen(screen, winner_name):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:  # Press Enter to play again
                     waiting = False
+
+        clock.tick(30)  # Control the frame rate
+
 
 def main(player_data):
     # Game loop that allows replay
