@@ -1,19 +1,20 @@
 import pygame
-from color.py import Color
+
 
 
 class Player:
-    def __init__(self,x,y,color,controls,name) -> None:
+    def __init__(self,x,y,color,controls,name,image) -> None:
         self.x = x
         self.y = y
+        self.image = image
         self.name = name
-        self.color = Color.BLUE
+        self.color = color
         self.controls = controls
         self.trail = [(self.x,self.y)]
         self.alive = True
         self.direction = "RIGHT"
-        self.size = 10
-        self.speed = 10
+        self.size = 5
+        self.speed = 5
 
         
 
@@ -32,11 +33,13 @@ class Player:
         elif self.direction=="LEFT":
             self.x-=self.speed
         elif self.direction=="UP":
-            self.y+=self.speed
-        elif self.direction=="DOWN":
             self.y-=self.speed
+        elif self.direction=="DOWN":
+            self.y+=self.speed
     
         self.trail.append((self.x,self.y))
+        if len(self.trail) > 25:
+            self.trail.remove(self.trail[0])
 
     def draw(self, screen):
         #draw player as rectangle for now
@@ -47,7 +50,7 @@ class Player:
             pygame.draw.rect(screen, self.color, (segment[0], segment[1], self.size, self.size))
 
 
-    def checkForCollision(self,arenaWidth,arenaHeight):
+    def checkForCollision(self,arenaWidth,arenaHeight,otherTrailList):
         #checks if they have collided into the wall
         if self.x >= arenaWidth or self.x < 0 or self.y >= arenaHeight or self.y < 0:
             self.alive = False
@@ -55,6 +58,11 @@ class Player:
 
         if (self.x,self.y) in self.trail[:-1]:
             self.alive = False
+        
+        # check if player x and y is inside otherTrailList except for [:-1]
+        if (self.x,self.y) in otherTrailList[:-1]:
+            self.alive = False
+
     def reset(self,x,y):
         self.x = x
         self.y = y
