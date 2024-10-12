@@ -22,7 +22,7 @@ NEON_COLORS = {
     "Neon Pink": (255, 20, 147),      # Bright pink
     "Neon Purple": (128, 0, 128),     # Bright purple
     "Neon Lime": (50, 255, 0),        # Bright lime green
-    "Neon Turquoise": (0, 255, 255),  # Bright turquoise
+    "Neon Turquoise": (0, 200, 255),  # Bright turquoise
     "Neon Gold": (255, 215, 0),       # Bright gold
     "Neon Teal": (0, 128, 128),       # Bright teal
     "Neon Violet": (238, 130, 238),   # Bright violet
