@@ -7,7 +7,7 @@ pygame.init()
 pygame.mixer.init()
 
 #Load the background music 
-pygame.mixer.music.load("../media/DaftPunkEndOfLine.mp3")
+pygame.mixer.music.load("media\Audio\DaftPunkEndOfLine.mp3")
 pygame.mixer.music.play(-1)
 
 # Set up the screen
