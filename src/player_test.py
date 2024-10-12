@@ -25,9 +25,12 @@ player2_controls = {
 
 }
 
+#Load the Player image
+
+
 # Create a Player instance
-player1 = Player(100, 50, (0, 255, 0), player1_controls, 'Player1', None)
-player2 = Player(500,50,(255,127,80),player2_controls, 'Player2', None)
+player1 = Player(100, 50, (0, 255, 0), player1_controls, 'Player1','media/Sprites/spaceships/PNG/Spaceships/ship/')
+player2 = Player(500,50,(255,127,80),player2_controls, 'Player2', 'media/Sprites/spaceships/PNG/Spaceships/ship/')
 
 # Define some colors
 WHITE = (255, 255, 255)
@@ -60,6 +63,7 @@ while running:
     # Check for collisions with the screen edges
     player1.checkForCollision(screen_width, screen_height,player2.trail)
     player2.checkForCollision(screen_width,screen_height,player1.trail)
+
 
     # Draw the player and its trail
     player1.draw(screen)
