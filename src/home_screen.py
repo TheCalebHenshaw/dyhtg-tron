@@ -86,6 +86,9 @@ def render_glow_text_with_fade(text, font, base_color, glow_color, max_glow_size
 
 # Main menu function
 def main_menu():
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Tron - Home Screen")
     global text_x
     clock = pygame.time.Clock()
     current_frame = 0
