@@ -26,6 +26,8 @@ class Player(pygame.sprite.Sprite):
         self.trail = [self.rect.center]  # Initialize trail with the center position
         self.alive = True
         self.direction = "RIGHT"
+        self.x = x
+        self.y = y
         self.size = 5
         self.speed = 5
         self.x_collision = 155
@@ -60,7 +62,7 @@ class Player(pygame.sprite.Sprite):
 
         # Add the new center position to the trail
         self.trail.append(self.rect.center)
-        if len(self.trail) > 25:
+        if len(self.trail) > 100:
             self.trail.pop(0)  # Remove the oldest trail point
 
     def draw(self, screen):
@@ -74,7 +76,7 @@ class Player(pygame.sprite.Sprite):
 
     def checkForCollision(self,arenaWidth,arenaHeight,otherTrailList):
         #checks if they have collided into the wall
-        if self.x >= arenaWidth-self.x_collision or self.x < self.x_collision or self.y >= arenaHeight-self.y_collision or self.y < self.y_collision:
+        if self.rect.x >= arenaWidth-self.x_collision or self.rect.x < self.x_collision or self.rect.y >= arenaHeight-self.y_collision or self.rect.y < self.y_collision:
             self.alive = False
 
         # Check if the player has collided with their own trail

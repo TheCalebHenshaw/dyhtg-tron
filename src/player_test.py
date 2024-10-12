@@ -40,8 +40,8 @@ player2_controls = {
 
 
 # Create a Player instance
-player1 = Player(100, 50, (0, 255, 0), player1_controls, 'Player1','media/Sprites/spaceships/PNG/Spaceships/ship/')
-player2 = Player(500,50,(255,127,80),player2_controls, 'Player2', 'media/Sprites/spaceships/PNG/Spaceships/ship/')
+player1 = Player(250, 50, (0, 255, 0), player1_controls, 'Player1','media/Sprites/spaceships/PNG/Spaceships/ship/')
+player2 = Player(650,50,(255,127,80),player2_controls, 'Player2', 'media/Sprites/spaceships/PNG/Spaceships/ship/')
 
 # Define some colors
 WHITE = (255, 255, 255)
@@ -106,7 +106,7 @@ while running:
     pygame.display.flip()
 
     # Cap the frame rate
-    clock.tick(30)  # Adjust frame rate as needed
+    clock.tick(60)  # Adjust frame rate as needed
 
 # Quit Pygame
 pygame.quit()
