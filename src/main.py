@@ -163,6 +163,7 @@ def handle_color_selection(event, player_index, x_offset):
 
 def playerStart() -> None:
     """Main setup loop to handle input and ready state."""
+
     
     running = True
 

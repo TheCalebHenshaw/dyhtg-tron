@@ -191,7 +191,6 @@ def main_menu():
                 if play_button_rect.collidepoint(mouse_pos):
                     import main
                     main.playerStart()
-                    
                 elif help_button_rect.collidepoint(mouse_pos):
                     import help  # Import the help module
                     help.help_page(screen)  # Call the help_page function and pass the screen
