@@ -150,8 +150,11 @@ def help_page():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if button_rect.collidepoint(mouse_pos):
-                    pygame.quit()  # Close the current window before going back
-                    subprocess.run(["python3", "home_screen.py"])  # Run home_screen.py as a new process
+                    # Remove pygame.quit() here to avoid video system error
+                    subprocess.run(["python3", os.path.join(script_dir, 'home_screen.py')])  # Correct path to home_screen.py
+
+                    pygame.quit()  # Close the current window after subprocess is complete
+                    sys.exit()
 
         pygame.display.flip()
         clock.tick(60)
