@@ -1,8 +1,6 @@
 import pygame
 import sys
 import os
-import subprocess  # Import subprocess to run help.py
-
 
 # Initialize Pygame
 pygame.init()
@@ -67,22 +65,24 @@ text_x = -300
 def render_glow_text_with_fade(text, font, base_color, glow_color, max_glow_size, fade_steps):
     base_text = font.render(text, True, base_color)
 
-    glow_surface = pygame.Surface((base_text.get_width() + max_glow_size * 2, base_text.get_height() + max_glow_size * 2), pygame.SRCALPHA)
+    glow_surface = pygame.Surface(
+        (base_text.get_width() + max_glow_size * 2, base_text.get_height() + max_glow_size * 2),
+        pygame.SRCALPHA
+    )
     
     for step in range(fade_steps):
         glow_size = max_glow_size * (step + 1) / fade_steps
         opacity = 255 * (fade_steps - step) / fade_steps
         glow_text = font.render(text, True, glow_color)
         glow_text.set_alpha(opacity)
-        glow_surface.blit(glow_text, (max_glow_size - glow_size, max_glow_size - glow_size))
+        glow_surface.blit(
+            glow_text,
+            (max_glow_size - glow_size, max_glow_size - glow_size)
+        )
 
     glow_surface.blit(base_text, (max_glow_size, max_glow_size))
     
     return glow_surface
-
-# Game loop (placeholder)
-
-    
 
 # Main menu function
 def main_menu():
@@ -101,8 +101,18 @@ def main_menu():
         screen.blit(sprite_frames[current_frame], (0, 0))
 
         # Create and render the glow text
-        glow_text_surface = render_glow_text_with_fade("Tron", font, WHITE, NEON_CYAN, max_glow_size=10, fade_steps=5)
-        screen.blit(glow_text_surface, (SCREEN_WIDTH // 2 - glow_text_surface.get_width() // 2, 100))
+        glow_text_surface = render_glow_text_with_fade(
+            "Tron",
+            font,
+            WHITE,
+            NEON_CYAN,
+            max_glow_size=10,
+            fade_steps=5
+        )
+        screen.blit(
+            glow_text_surface,
+            (SCREEN_WIDTH // 2 - glow_text_surface.get_width() // 2, 100)
+        )
 
         # Button settings
         button_width = 200
@@ -111,9 +121,24 @@ def main_menu():
         help_button_y = play_button_y + button_height + 20
         quit_button_y = help_button_y + button_height + 20
 
-        play_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - button_width // 2, play_button_y, button_width, button_height)
-        help_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - button_width // 2, help_button_y, button_width, button_height)
-        quit_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - button_width // 2, quit_button_y, button_width, button_height)
+        play_button_rect = pygame.Rect(
+            SCREEN_WIDTH // 2 - button_width // 2,
+            play_button_y,
+            button_width,
+            button_height
+        )
+        help_button_rect = pygame.Rect(
+            SCREEN_WIDTH // 2 - button_width // 2,
+            help_button_y,
+            button_width,
+            button_height
+        )
+        quit_button_rect = pygame.Rect(
+            SCREEN_WIDTH // 2 - button_width // 2,
+            quit_button_y,
+            button_width,
+            button_height
+        )
 
         mouse_pos = pygame.mouse.get_pos()
         play_button_color = HOVER_COLOR if play_button_rect.collidepoint(mouse_pos) else LIGHT_BLUE
@@ -128,12 +153,27 @@ def main_menu():
         help_text = small_font.render("Help", True, BLACK)
         quit_text = small_font.render("Quit", True, BLACK)
 
-        screen.blit(play_text, (play_button_rect.x + (button_width - play_text.get_width()) // 2,
-                                play_button_rect.y + (button_height - play_text.get_height()) // 2))
-        screen.blit(help_text, (help_button_rect.x + (button_width - help_text.get_width()) // 2,
-                                help_button_rect.y + (button_height - help_text.get_height()) // 2))
-        screen.blit(quit_text, (quit_button_rect.x + (button_width - quit_text.get_width()) // 2,
-                                quit_button_rect.y + (button_height - quit_text.get_height()) // 2))
+        screen.blit(
+            play_text,
+            (
+                play_button_rect.x + (button_width - play_text.get_width()) // 2,
+                play_button_rect.y + (button_height - play_text.get_height()) // 2
+            )
+        )
+        screen.blit(
+            help_text,
+            (
+                help_button_rect.x + (button_width - help_text.get_width()) // 2,
+                help_button_rect.y + (button_height - help_text.get_height()) // 2
+            )
+        )
+        screen.blit(
+            quit_text,
+            (
+                quit_button_rect.x + (button_width - quit_text.get_width()) // 2,
+                quit_button_rect.y + (button_height - quit_text.get_height()) // 2
+            )
+        )
 
         # Add scrolling text at the top
         scrolling_text_surface = small_font.render(scrolling_text, True, WHITE)
@@ -153,11 +193,8 @@ def main_menu():
                     main.playerStart()
                     
                 elif help_button_rect.collidepoint(mouse_pos):
-                    help_script_path = os.path.join(script_dir, "help.py")
-                    if os.path.exists(help_script_path):
-                        subprocess.run(["python3", help_script_path])  # Use absolute path to run help.py
-                    else:
-                        print(f"Error: {help_script_path} not found.")
+                    import help  # Import the help module
+                    help.help_page(screen)  # Call the help_page function and pass the screen
                 elif quit_button_rect.collidepoint(mouse_pos):
                     pygame.quit()
                     sys.exit()

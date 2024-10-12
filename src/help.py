@@ -1,10 +1,6 @@
 import pygame
 import sys
-import subprocess
 import os
-
-# Initialize Pygame
-pygame.init()
 
 # Define colors
 BLACK = (0, 0, 0)
@@ -18,10 +14,6 @@ KEY_BORDER_COLOR = WHITE  # Key border color
 # Screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-
-# Create the screen object
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("How to Play Page")
 
 # Font settings
 title_font = pygame.font.Font(None, 74)
@@ -68,7 +60,7 @@ sprite_frame_count = len(sprite_frames)
 # Set the frame delay (in milliseconds)
 frame_delay = 100  # You can adjust this value to control the speed of the animation
 
-def draw_boxed_key(text, x, y, width=50, height=50):
+def draw_boxed_key(screen, text, x, y, width=50, height=50):
     """ Draw a single key in a box at (x, y) """
     key_rect = pygame.Rect(x, y, width, height)
     pygame.draw.rect(screen, KEY_COLOR, key_rect)  # Draw the key box
@@ -76,16 +68,16 @@ def draw_boxed_key(text, x, y, width=50, height=50):
     key_text = control_font.render(text, True, WHITE)
     screen.blit(key_text, (x + (width - key_text.get_width()) // 2, y + (height - key_text.get_height()) // 2))
 
-def draw_controls():
+def draw_controls(screen):
     # Player 1 (left side)
     player1_title = title_font.render("Player 1", True, RED)
     screen.blit(player1_title, (50, 100))
 
     # Draw the WASD controls in individual boxes
-    draw_boxed_key("W", 100, 200)
-    draw_boxed_key("A", 50, 260)
-    draw_boxed_key("S", 100, 260)
-    draw_boxed_key("D", 150, 260)
+    draw_boxed_key(screen, "W", 100, 200)
+    draw_boxed_key(screen, "A", 50, 260)
+    draw_boxed_key(screen, "S", 100, 260)
+    draw_boxed_key(screen, "D", 150, 260)
 
     # Add text box below Player 1
     player1_text = "Player 1 uses the W A S D keys to navigate."
@@ -97,24 +89,29 @@ def draw_controls():
     screen.blit(player2_title, (SCREEN_WIDTH - 250, 100))
 
     # Draw the arrow keys in individual boxes
-    draw_boxed_key("↑", SCREEN_WIDTH - 175, 200)
-    draw_boxed_key("←", SCREEN_WIDTH - 225, 260)
-    draw_boxed_key("↓", SCREEN_WIDTH - 175, 260)
-    draw_boxed_key("→", SCREEN_WIDTH - 125, 260)
+    draw_boxed_key(screen, "↑", SCREEN_WIDTH - 175, 200)
+    draw_boxed_key(screen, "←", SCREEN_WIDTH - 225, 260)
+    draw_boxed_key(screen, "↓", SCREEN_WIDTH - 175, 260)
+    draw_boxed_key(screen, "→", SCREEN_WIDTH - 125, 260)
 
     # Add text box below Player 2
     player2_text = "Player 2 uses the keypad arrows to navigate."
     player2_text_surface = text_box_font.render(player2_text, True, WHITE)
     screen.blit(player2_text_surface, (SCREEN_WIDTH - 350, 350))
 
-def help_page():
+def help_page(screen):
     clock = pygame.time.Clock()
     current_frame = 0
     last_update_time = pygame.time.get_ticks()
 
     button_width = 150
     button_height = 50
-    button_rect = pygame.Rect(SCREEN_WIDTH // 2 - button_width // 2, SCREEN_HEIGHT - 150, button_width, button_height)
+    button_rect = pygame.Rect(
+        SCREEN_WIDTH // 2 - button_width // 2,
+        SCREEN_HEIGHT - 150,
+        button_width,
+        button_height
+    )
 
     while True:
         # Handle frame timing to update the current frame
@@ -128,10 +125,13 @@ def help_page():
 
         # Draw the "How to Play" heading
         title_text = title_font.render("How to Play", True, WHITE)
-        screen.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 10))
+        screen.blit(
+            title_text,
+            (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 10)
+        )
 
         # Draw the player controls and text boxes
-        draw_controls()
+        draw_controls(screen)
 
         # Back button
         mouse_pos = pygame.mouse.get_pos()
@@ -139,8 +139,13 @@ def help_page():
 
         pygame.draw.rect(screen, button_color, button_rect)
         back_text = button_font.render("Back", True, BLACK)
-        screen.blit(back_text, (button_rect.x + (button_width - back_text.get_width()) // 2,
-                                button_rect.y + (button_height - back_text.get_height()) // 2))
+        screen.blit(
+            back_text,
+            (
+                button_rect.x + (button_width - back_text.get_width()) // 2,
+                button_rect.y + (button_height - back_text.get_height()) // 2
+            )
+        )
 
         # Event handling
         for event in pygame.event.get():
@@ -150,14 +155,14 @@ def help_page():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if button_rect.collidepoint(mouse_pos):
-                    # Remove pygame.quit() here to avoid video system error
-                    subprocess.run(["python3", os.path.join(script_dir, 'home_screen.py')])  # Correct path to home_screen.py
-
-                    pygame.quit()  # Close the current window after subprocess is complete
-                    sys.exit()
+                    return  # Simply exit the help_page function to return control to home_screen.py
 
         pygame.display.flip()
         clock.tick(60)
 
 if __name__ == "__main__":
-    help_page()
+    # If help.py is run directly, initialize Pygame and create the screen
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("How to Play Page")
+    help_page(screen)
