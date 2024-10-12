@@ -1,11 +1,12 @@
 import pygame
+from color.py import Color
 
 
 class Player:
     def __init__(self,x,y,color,controls) -> None:
         self.x = x
         self.y = y
-        self.color = color
+        self.color = Color.BLUE
         self.controls = controls
         self.trail = [(self.x,self.y)]
         self.alive = True
