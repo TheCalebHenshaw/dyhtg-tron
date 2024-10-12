@@ -60,7 +60,16 @@ player2_controls = {
     'right': pygame.K_RIGHT
 }
 
-player_states = [{'name_input': True, 'color_input': False, 'ready': False},
+
+
+def reset_player_data():
+    """Reset player data for a new game."""
+    global player1_name, player2_name, player1_colour, player2_colour, player_states
+    player1_name = ''
+    player2_name = ''
+    player1_colour = None
+    player2_colour = None
+    player_states = [{'name_input': True, 'color_input': False, 'ready': False},
                  {'name_input': True, 'color_input': False, 'ready': False}]
 
 # TextBox class to handle player name input
@@ -163,49 +172,44 @@ def handle_color_selection(event, player_index, x_offset):
 
 def playerStart() -> None:
     """Main setup loop to handle input and ready state."""
+    reset_player_data()  # Ensure player data is reset ONCE, before entering the loop
 
-    
     running = True
 
     # Create text boxes for player names
-    player1_textbox = TextBox(150, 100, 200, 40, 0)  # Position below the player prompt
-    player2_textbox = TextBox(450, 100, 200, 40, 1)  # Position below the player prompt
+    player1_textbox = TextBox(150, 100, 200, 40, 0)
+    player2_textbox = TextBox(450, 100, 200, 40, 1)
 
     # Create start button (will only be shown when both players are ready)
     start_button = Button(350, 500, 120, 50, "Start")
 
-
     while running:
-        screen.fill((0, 0, 0))  # Black background
+        screen.fill((0, 0, 0))
 
         # Draw all UI elements on top
-        # Player 1 setup on the left
         draw_text("Player 1 Name: ", (120, 50))
-        player1_textbox.draw(screen)  # Draw Player 1 text box
+        player1_textbox.draw(screen)
 
         if player_states[0]['color_input']:
             draw_text("Choose a Color: ", (90, 160))
             choose_color(20)
 
         if not player_states[0]['color_input'] and player1_colour is not None:
-            draw_text("Ready", (240, 250), player1_colour)  # Use player 1 color
+            draw_text("Ready", (240, 250), player1_colour)
 
-        # Player 2 setup on the right
         draw_text("Player 2 Name: ", (420, 50))
-        player2_textbox.draw(screen)  # Draw Player 2 text box
+        player2_textbox.draw(screen)
 
         if player_states[1]['color_input']:
             draw_text("Choose a Color: ", (430, 160))
             choose_color(430)
 
         if not player_states[1]['color_input'] and player2_colour is not None:
-            draw_text("Ready", (450, 250), player2_colour)  # Use player 2 color
+            draw_text("Ready", (450, 250), player2_colour)
 
-        # Check if both players are ready to show the start button
         if player_states[0]['ready'] and player_states[1]['ready']:
             start_button.draw(screen)
 
-        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -233,11 +237,11 @@ def playerStart() -> None:
             if player_states[0]['ready'] and player_states[1]['ready']:
                 if start_button.handle_event(event):
                     import player_test
-                    player_test.main([(player1_colour,player1_name),(player2_colour,player2_name)])
+                    player_test.main([(player1_colour, player1_name), (player2_colour, player2_name)])
                     running = False  # Exit the setup and start the game
 
         pygame.display.flip()
 
+
 if __name__ == '__main__':
     playerStart()
-
