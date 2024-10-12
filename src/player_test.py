@@ -3,6 +3,12 @@ from player import Player  # Assuming player.py is the file where your Player cl
 
 # Initialize Pygame
 pygame.init()
+#Initialize sound system
+pygame.mixer.init()
+
+#Load the background music 
+pygame.mixer.music.load("media\Audio\DaftPunkEndOfLine.mp3")
+pygame.mixer.music.play(-1)
 
 # Set up the screen
 screen_width = 1200
