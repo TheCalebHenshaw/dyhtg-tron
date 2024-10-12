@@ -3,6 +3,7 @@ import pygame
 import sys
 import random
 import math
+import os
 
 pygame.init()
 
@@ -38,7 +39,7 @@ NEON_COLORS = {
 # Convert NEON_COLORS dictionary to a list of color values
 colors = list(NEON_COLORS.values())
 
-font_path = "/Users/abhishekshadakshari/Documents/dyhtg-tron/Venora-G36PO.otf"
+font_path = os.path.join('Venora-G36PO.otf')
 font = pygame.font.Font(font_path, 24)
 
 player1_name = ''
