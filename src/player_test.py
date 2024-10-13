@@ -2,9 +2,8 @@ import pygame
 from player import Player  # Assuming player.py is the file where your Player class is
 import os
 import home_screen  # Import home_screen to go back to it
-
-import pygame
-import os
+import random
+from powerUps import PowerUp
 
 # Constants
 SCREEN_WIDTH = 1200
@@ -142,6 +141,18 @@ def display_end_screen(screen, winner_name):
 
         clock.tick(30)  # Control the frame rate
 
+def spawn_powerups(width, height, powerups):
+    powerup_effects = ['speed_boost', 'slow', ]
+    x = random.randint(50, width - 50)
+    y = random.randint(50, height - 50)
+    effect = random.choice(powerup_effects)
+    powerup = PowerUp(x, y, effect)
+    powerups.add(powerup)  
+    print(f"Spawned power-up at ({x}, {y}) with effect: {effect}")  # Debug statement
+
+
+    return powerups
+
 
 def main(player_data):
     # Game loop that allows replay
@@ -187,6 +198,13 @@ def main(player_data):
         player1 = Player(250, 50, player1_color, player1_controls, player1_name, 'media/Sprites/spaceships/PNG/Spaceships/ship/')
         player2 = Player(650, 50, player2_color, player2_controls, player2_name, 'media/Sprites/spaceships/PNG/Spaceships/ship/')
 
+        players = pygame.sprite.Group()
+        players.add(player1)
+        players.add(player2)
+        
+
+        powerups = pygame.sprite.Group()
+
         # Define some colors
         WHITE = (255, 255, 255)
         BLACK = (0, 0, 0)
@@ -203,6 +221,10 @@ def main(player_data):
         bikeAudio = os.path.join("media", "Audio", "TronCycleNoise.wav")
         bikeSound = pygame.mixer.Sound(bikeAudio)
         bikeSound.play()
+
+        POWERUP_SPAWN_EVENT = pygame.USEREVENT + 2
+        pygame.time.set_timer(POWERUP_SPAWN_EVENT, 2000)
+
         while running:
             screen.fill(BLACK)  # Clear screen with black
             blockSize = 30  # Set the size of the grid block
@@ -222,6 +244,8 @@ def main(player_data):
                     player1.y_collision += close_in
                     player2.x_collision += close_in
                     player2.y_collision += close_in
+                elif event.type == POWERUP_SPAWN_EVENT:
+                    powerups = spawn_powerups(screen_width-x_border,screen_height-y_border, powerups)
 
             # Get pressed keys
             keys = pygame.key.get_pressed()
@@ -236,9 +260,30 @@ def main(player_data):
             player1.checkForCollision(screen_width, screen_height, player2.trail)
             player2.checkForCollision(screen_width, screen_height, player1.trail)
 
+            for player in players:
+                powerup_collided = pygame.sprite.spritecollideany(player, powerups)
+                if powerup_collided:
+                    powerup_collided.apply_effect(player)
+                    powerup_collided.kill()
+                    print(f"removed - picked up")  # Debug statement for removed power-up
+
+
+            for powerup in powerups:
+                if (powerup.rect.x < x_border or 
+                    powerup.rect.x > screen_width - x_border or 
+                    powerup.rect.y < y_border or 
+                    powerup.rect.y > screen_height - y_border):
+                    powerup.kill()  # Remove the power-up if it collides with the walls
+            
+            
+
             # Draw the player and its trail
             player1.draw(screen)
             player2.draw(screen)
+            powerups.draw(screen)
+            powerups.update(screen)
+
+
             explosionAudio = os.path.join("media", "Audio", "Explosion.wav")
             explosionSound = pygame.mixer.Sound(explosionAudio)
 
@@ -262,7 +307,3 @@ def main(player_data):
             # Cap the frame rate
             clock.tick(60)  # Adjust frame rate as needed
 
-if __name__ == "__main__":
-    # Example player data passed to main
-    player_data = [(pygame.Color('red'), 'Player 1'), (pygame.Color('blue'), 'Player 2')]
-    main(player_data)
