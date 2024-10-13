@@ -2,6 +2,8 @@ import pygame
 import sys
 import os
 
+pygame.init()
+
 # Define colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -61,12 +63,27 @@ sprite_frame_count = len(sprite_frames)
 frame_delay = 100  # You can adjust this value to control the speed of the animation
 
 def draw_boxed_key(screen, text, x, y, width=50, height=50):
-    """ Draw a single key in a box at (x, y) """
+    """ Draw a single key in a box at (x, y). Special case for arrow keys, drawing them graphically. """
     key_rect = pygame.Rect(x, y, width, height)
     pygame.draw.rect(screen, KEY_COLOR, key_rect)  # Draw the key box
     pygame.draw.rect(screen, KEY_BORDER_COLOR, key_rect, 2)  # Draw the border
-    key_text = control_font.render(text, True, WHITE)
-    screen.blit(key_text, (x + (width - key_text.get_width()) // 2, y + (height - key_text.get_height()) // 2))
+
+    if text == "up":
+        # Draw an upward triangle (up arrow)
+        pygame.draw.polygon(screen, WHITE, [(x + width // 2, y + 10), (x + 10, y + height - 10), (x + width - 10, y + height - 10)])
+    elif text == "left":
+        # Draw a leftward triangle (left arrow)
+        pygame.draw.polygon(screen, WHITE, [(x + 10, y + height // 2), (x + width - 10, y + 10), (x + width - 10, y + height - 10)])
+    elif text == "down":
+        # Draw a downward triangle (down arrow)
+        pygame.draw.polygon(screen, WHITE, [(x + width // 2, y + height - 10), (x + 10, y + 10), (x + width - 10, y + 10)])
+    elif text == "right":
+        # Draw a rightward triangle (right arrow)
+        pygame.draw.polygon(screen, WHITE, [(x + width - 10, y + height // 2), (x + 10, y + 10), (x + 10, y + height - 10)])
+    else:
+        # Render text for non-arrow keys
+        key_text = control_font.render(text, True, WHITE)
+        screen.blit(key_text, (x + (width - key_text.get_width()) // 2, y + (height - key_text.get_height()) // 2))
 
 def draw_controls(screen):
     # Player 1 (left side)
@@ -79,25 +96,43 @@ def draw_controls(screen):
     draw_boxed_key(screen, "S", 100, 260)
     draw_boxed_key(screen, "D", 150, 260)
 
-    # Add text box below Player 1
-    player1_text = "Player 1 uses the W A S D keys to navigate."
-    player1_text_surface = text_box_font.render(player1_text, True, WHITE)
-    screen.blit(player1_text_surface, (50, 350))
+    # Split Player 1 text into two lines
+    player1_text_line1 = "Player 1 uses the W A S D"
+    player1_text_line2 = "keys to navigate."
+    
+    # Render and display both lines of text for Player 1
+    player1_text_surface_line1 = text_box_font.render(player1_text_line1, True, WHITE)
+    player1_text_surface_line2 = text_box_font.render(player1_text_line2, True, WHITE)
+
+    screen.blit(player1_text_surface_line1, (50, 350))
+    screen.blit(player1_text_surface_line2, (50, 380))  # Adjust Y-position for the second line
 
     # Player 2 (right side)
     player2_title = title_font.render("Player 2", True, RED)
     screen.blit(player2_title, (SCREEN_WIDTH - 250, 100))
 
-    # Draw the arrow keys in individual boxes
-    draw_boxed_key(screen, "↑", SCREEN_WIDTH - 175, 200)
-    draw_boxed_key(screen, "←", SCREEN_WIDTH - 225, 260)
-    draw_boxed_key(screen, "↓", SCREEN_WIDTH - 175, 260)
-    draw_boxed_key(screen, "→", SCREEN_WIDTH - 125, 260)
+    # Draw the arrow keys using the graphical arrows
+    draw_boxed_key(screen, "up", SCREEN_WIDTH - 175, 200)    # Up arrow
+    draw_boxed_key(screen, "left", SCREEN_WIDTH - 225, 260)  # Left arrow
+    draw_boxed_key(screen, "down", SCREEN_WIDTH - 175, 260)  # Down arrow
+    draw_boxed_key(screen, "right", SCREEN_WIDTH - 125, 260) # Right arrow
 
-    # Add text box below Player 2
-    player2_text = "Player 2 uses the keypad arrows to navigate."
-    player2_text_surface = text_box_font.render(player2_text, True, WHITE)
-    screen.blit(player2_text_surface, (SCREEN_WIDTH - 350, 350))
+    # Split Player 2 text into two lines
+    player2_text_line1 = "Player 2 uses the keypad"
+    player2_text_line2 = "arrows to navigate."
+
+    # Render and display both lines of text for Player 2
+    player2_text_surface_line1 = text_box_font.render(player2_text_line1, True, WHITE)
+    player2_text_surface_line2 = text_box_font.render(player2_text_line2, True, WHITE)
+
+    # Calculate the right-aligned x position
+    right_align_x1 = SCREEN_WIDTH - 50 - player2_text_surface_line1.get_width()
+    right_align_x2 = SCREEN_WIDTH - 96 - player2_text_surface_line2.get_width()
+
+     # Display the Player 2 text lines right-aligned
+    screen.blit(player2_text_surface_line1, (right_align_x1, 350))
+    screen.blit(player2_text_surface_line2, (right_align_x2, 380))  # Adjust Y-position for the second line
+
 
 def help_page(screen):
     clock = pygame.time.Clock()
@@ -123,12 +158,21 @@ def help_page(screen):
         # Draw the current frame of the sprite sheet as the background
         screen.blit(sprite_frames[current_frame], (0, 0))
 
-        # Draw the "How to Play" heading
+        # Create the "How to Play" text
         title_text = title_font.render("How to Play", True, WHITE)
-        screen.blit(
-            title_text,
-            (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 10)
-        )
+        text_width, text_height = title_text.get_size()
+        text_position = (SCREEN_WIDTH // 2 - text_width // 2, 10)
+
+        # Underglow effect: Draw slightly larger blurred text under the main text
+        glow_color = (100, 150, 255)  # Soft blue color for the glow
+        glow_text = title_font.render("How to Play", True, glow_color)
+
+        # Position the glow text slightly lower and larger
+        for offset in range(1, 5):  # Creates multiple layers of the glow for a blur effect
+            screen.blit(glow_text, (text_position[0], text_position[1] + offset))
+
+        # Draw the actual "How to Play" text on top
+        screen.blit(title_text, text_position)
 
         # Draw the player controls and text boxes
         draw_controls(screen)
@@ -159,6 +203,10 @@ def help_page(screen):
 
         pygame.display.flip()
         clock.tick(60)
+
+
+
+
 
 if __name__ == "__main__":
     # If help.py is run directly, initialize Pygame and create the screen
