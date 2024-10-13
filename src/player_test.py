@@ -225,6 +225,23 @@ def main(player_data):
         POWERUP_SPAWN_EVENT = pygame.USEREVENT + 2
         pygame.time.set_timer(POWERUP_SPAWN_EVENT, 2000)
 
+        STAR_EVENT = pygame.USEREVENT + 4
+
+
+        pygame.time.set_timer(STAR_EVENT, 300)  
+
+        stars = []
+
+        def draw_random_effects(screen):
+            # Draw stars (small white circles)
+            for star in stars:
+                pygame.draw.circle(screen, (255, 255, 255), (star['x'], star['y']), 3)  # White star
+                star['timer'] -= 1
+            stars[:] = [s for s in stars if s['timer'] > 0]  # Remove stars after timer expires
+        
+
+
+
         while running:
             screen.fill(BLACK)  # Clear screen with black
             blockSize = 30  # Set the size of the grid block
@@ -232,6 +249,9 @@ def main(player_data):
                 for y in range(y_border, screen_height-y_border, blockSize):
                     rect = pygame.Rect(x, y, blockSize, blockSize)
                     pygame.draw.rect(screen, NAVY, rect, 2)
+
+            draw_random_effects(screen)
+
 
             # Event handling
             for event in pygame.event.get():
@@ -246,6 +266,13 @@ def main(player_data):
                     player2.y_collision += close_in
                 elif event.type == POWERUP_SPAWN_EVENT:
                     powerups = spawn_powerups(screen_width-x_border,screen_height-y_border, powerups)
+                elif event.type == STAR_EVENT:
+                    # Add a random star (small white circle)
+                    stars.append({
+                            'x': random.randint(x_border, screen_width - x_border),
+                            'y': random.randint(y_border, screen_height - y_border),
+                            'timer': 60  # Star lasts for 60 frames
+                    })
 
             # Get pressed keys
             keys = pygame.key.get_pressed()
