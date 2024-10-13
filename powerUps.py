@@ -1,12 +1,23 @@
 import pygame
 import os
 import random
+import sys
+
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for PyInstaller. """
+    try:
+        base_path = sys._MEIPASS  # If frozen by PyInstaller
+    except Exception:
+        base_path = os.path.abspath(".")  # If not frozen
+
+    return os.path.join(base_path, relative_path)
 
 
-invincibility_im = os.path.join("media", "Sprites", "powerups",  "invincibility.png")
-speed_im = os.path.join("media", "Sprites", "powerups",  "speed.png")
-double_size_im =  os.path.join("media", "Sprites", "powerups",  "double_size.png")
-half_size_im = os.path.join("media", "Sprites", "powerups",  "half_size.png")
+
+invincibility_im = resource_path(os.path.join("media", "Sprites", "powerups",  "invincibility.png"))
+speed_im = resource_path(os.path.join("media", "Sprites", "powerups",  "speed.png"))
+double_size_im =  resource_path(os.path.join("media", "Sprites", "powerups",  "double_size.png"))
+half_size_im = resource_path(os.path.join("media", "Sprites", "powerups",  "half_size.png"))
 
 class PowerUp(pygame.sprite.Sprite):
     def __init__(self, x, y, effect_type):
