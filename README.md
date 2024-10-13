@@ -7,4 +7,4 @@
 - on MacOS, open the dist folder and open Tron
 
 
-- To open using python, cd into the directory and run `python main_screen.py`
+- To open using python, cd into the directory and run `python main_screen.py`. Ensure you have pygame installed in your environment!!
