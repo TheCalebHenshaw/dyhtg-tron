@@ -265,7 +265,6 @@ def main(player_data):
                 if powerup_collided:
                     powerup_collided.apply_effect(player)
                     powerup_collided.kill()
-                    print(f"removed - picked up")  # Debug statement for removed power-up
 
 
             for powerup in powerups:
@@ -274,6 +273,13 @@ def main(player_data):
                     powerup.rect.y < y_border or 
                     powerup.rect.y > screen_height - y_border):
                     powerup.kill()  # Remove the power-up if it collides with the walls
+
+            for player in players:
+                if (player.rect.x < x_border or 
+                    player.rect.x > screen_width - x_border or 
+                    player.rect.y < y_border or 
+                    player.rect.y > screen_height - y_border):
+                    player.kill()  # Remove the power-up if it collides with the walls
             
             
 
