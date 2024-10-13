@@ -82,7 +82,6 @@ def reset_player_data():
     player_states = [{'name_input': True, 'color_input': False, 'ready': False},
                  {'name_input': True, 'color_input': False, 'ready': False}]
 
-# TextBox class to handle player name input
 class TextBox:
     def __init__(self, x, y, width, height, player_index):
         self.rect = pygame.Rect(x, y, width, height)
@@ -92,6 +91,7 @@ class TextBox:
         self.active = False
         self.font = font
         self.player_index = player_index  # Store player index
+        self.char_limit = 8  # Set character limit to 8
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -109,14 +109,16 @@ class TextBox:
                 if self.player_index == 0:
                     global player1_name
                     player1_name = self.text  # Store Player 1 name
-                else:
+                elif self.player_index == 1:  # Added elif here
                     global player2_name
                     player2_name = self.text  # Store Player 2 name
                 return True  # Indicate to move to the next input
-            else:
-                self.text += event.unicode
+            elif len(self.text) < self.char_limit:  # Check if under char limit
+                self.text += event.unicode  # Add new character if within limit
 
         return False  # Indicate to stay on the current input
+
+
 
     def draw(self, screen):
         # Draw the text box background and border

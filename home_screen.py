@@ -171,7 +171,7 @@ def main_menu():
         pygame.draw.rect(screen, quit_button_color, quit_button_rect)
 
         play_text = small_font.render("Play", True, BLACK)
-        help_text = small_font.render("Help", True, BLACK)
+        help_text = small_font.render("How to Play", True, BLACK)
         quit_text = small_font.render("Quit", True, BLACK)
 
         screen.blit(

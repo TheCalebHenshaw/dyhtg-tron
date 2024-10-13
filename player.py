@@ -46,6 +46,19 @@ class Player(pygame.sprite.Sprite):
         self.x_collision = 155
         self.y_collision = 5
 
+        self.base_speed = 5
+        self.is_invincible = False
+
+        self.speed_timer = 0
+        self.size_timer = 0
+
+        self.default_size = 100
+        self.bigger = 150
+        self.smaller = 50
+        self.cur_size = self.default_size
+
+        
+
     def handle_controls(self,keys):
         if keys[self.controls['up']] and self.direction !='DOWN':
             self.direction = "UP"
@@ -57,6 +70,17 @@ class Player(pygame.sprite.Sprite):
             self.direction = "RIGHT"
 
     def move(self):
+
+        if self.speed_timer > 0:
+            self.speed_timer -= 1
+            if self.speed_timer == 0:
+                self.speed = self.base_speed  # Reset speed when timer expires
+
+        if self.size_timer > 0:
+            self.size_timer -= 1
+            if self.size_timer == 0:
+                self.reset_size() 
+
         # Update image and move based on direction
         if self.direction == "RIGHT":
             self.image = self.images[1]
@@ -73,7 +97,7 @@ class Player(pygame.sprite.Sprite):
 
         # Add the new center position to the trail
         self.trail.append(self.rect.center)
-        if len(self.trail) > 100:
+        if len(self.trail) > self.cur_size:
             self.trail.pop(0)  # Remove the oldest trail point
 
     def draw(self, screen):
@@ -84,6 +108,25 @@ class Player(pygame.sprite.Sprite):
         for segment in self.trail[:-1]:  # Leave out the current position
             pygame.draw.rect(screen, self.color, (segment[0], segment[1], self.size, self.size))
 
+    def speed_boost(self):
+        self.speed = 7  # Increase speed temporarily
+        self.speed_timer = 300  # Speed boost lasts for 300 frames (5 seconds at 60fps)
+
+    def slow(self):
+        # Reduce player size and image
+        self.speed = 3
+        self.speed_timer = 300 
+
+    def double_size(self):
+        # Double player size and image
+        self.size = 20
+        self.size_timer = 300  # Double size lasts for 5 seconds
+
+    def reset_size(self):
+        # Reset player size and image
+        self.cur_size = self.default_size
+        
+
     def checkForCollision(self,arenaWidth,arenaHeight,otherTrailList):
         #checks if they have collided into the wall
         if self.rect.x >= arenaWidth-self.x_collision or self.rect.x < self.x_collision or self.rect.y >= arenaHeight-self.y_collision or self.rect.y < self.y_collision:
@@ -91,12 +134,12 @@ class Player(pygame.sprite.Sprite):
             self.alive = False
 
         # Check if the player has collided with their own trail
-        if self.rect.center in self.trail[:-1]:
+        if self.rect.center in self.trail[:-1] and not self.is_invincible:
             print(f"Has died",self.name)
             self.alive = False
 
         # Check if the player has collided with the other player's trail
-        if self.rect.center in otherTrailList[:-1]:
+        if self.rect.center in otherTrailList[:-1] and not self.is_invincible:
             print(f"Has died",self.name)
             self.alive = False
 
